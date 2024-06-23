@@ -317,7 +317,7 @@ static void input_behavior_handler(const struct input_behavior_listener_config *
                 // no joystick scroll implemented
                 #endif
             #else
-                zmk_hid_mouse_scroll_set(data->mouse.wheel_data.x, data->mouse.wheel_data.y);
+                //zmk_hid_mouse_scroll_set(data->mouse.wheel_data.x, data->mouse.wheel_data.y);
             #endif
         }
 
