@@ -67,6 +67,8 @@ struct input_behavior_listener_data {
             struct input_behavior_listener_xy_data data;
             struct input_behavior_listener_xy_data wheel_data;
 
+            struct input_behavior_listener_xy_data wheel_data_save;
+
             uint8_t button_set;
             uint8_t button_clear;
         } mouse;
@@ -311,8 +313,11 @@ static void input_behavior_handler(const struct input_behavior_listener_config *
             if (config->rotate_deg > 0) {
                 float x = data->mouse.wheel_data.x;
                 float y = data->mouse.wheel_data.y;
-                data->mouse.wheel_data.x += (data->mouse.cos * x) - (data->mouse.sin * y);
-                data->mouse.wheel_data.y += (data->mouse.sin * x) + (data->mouse.cos * y);
+                data->mouse.wheel_data.x = (data->mouse.cos * x) - (data->mouse.sin * y);
+                data->mouse.wheel_data.y = (data->mouse.sin * x) + (data->mouse.cos * y);
+
+                data->mouse.wheel_data_save.x += data->mouse.wheel_data.x;
+                data->mouse.wheel_data_save.y += data->mouse.wheel_data.y;
             }
 
             #if USE_HID_IO
@@ -322,11 +327,11 @@ static void input_behavior_handler(const struct input_behavior_listener_config *
                 // no joystick scroll implemented
                 #endif
             #else
-            LOG_DBG("else: %d", data->mouse.wheel_data.y);
-                if(abs(data->mouse.wheel_data.y) > 10)
+            LOG_DBG("else: %d %d", data->mouse.wheel_data.y, data->mouse.wheel_data_save.y);
+                if(abs(data->mouse.wheel_data_save.y) > 10)
                 {
-                    zmk_hid_mouse_scroll_set(0, data->mouse.wheel_data.y > 0 ? 1 : -1);
-                    data->mouse.wheel_data.y = 0;
+                    zmk_hid_mouse_scroll_set(0, data->mouse.wheel_data_save.y > 0 ? 1 : -1);
+                    data->mouse.wheel_data_save.y = 0;
                 }
             #endif
         }
