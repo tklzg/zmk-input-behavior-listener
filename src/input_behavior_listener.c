@@ -285,10 +285,14 @@ static void clear_xy_data(struct input_behavior_listener_xy_data *data) {
 static void input_behavior_handler(const struct input_behavior_listener_config *config,
                                    struct input_behavior_listener_data *data, 
                                    struct input_event *evt) {
+
+                                    LOG_DBG("input_behavior_handler1111: %d", data->mouse.wheel_data.y);
     // First, filter to update the event data as needed.
     if (!intercept_with_input_config(config, evt)) {
         return;
     }
+
+    LOG_DBG("input_behavior_handler222: %d", data->mouse.wheel_data.y);
 
     switch (evt->type) {
     case INPUT_EV_REL:
