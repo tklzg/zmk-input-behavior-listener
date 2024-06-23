@@ -311,22 +311,19 @@ static void input_behavior_handler(const struct input_behavior_listener_config *
             if (config->rotate_deg > 0) {
                 float x = data->mouse.wheel_data.x;
                 float y = data->mouse.wheel_data.y;
-                data->mouse.wheel_data.x = (data->mouse.cos * x) - (data->mouse.sin * y);
-                data->mouse.wheel_data.y = (data->mouse.sin * x) + (data->mouse.cos * y);
+                data->mouse.wheel_data.x += (data->mouse.cos * x) - (data->mouse.sin * y);
+                data->mouse.wheel_data.y += (data->mouse.sin * x) + (data->mouse.cos * y);
             }
-
-            LOG_DBG("input_behavior_handler: %d", data->mouse.wheel_data.y);
 
             #if USE_HID_IO
                 #if IS_ENABLED(CONFIG_ZMK_HID_IO_MOUSE)
-                LOG_DBG("CONFIG_ZMK_HID_IO_MOUSE: %d", data->mouse.wheel_data.y);
                 zmk_hid_mou2_scroll_set(data->mouse.wheel_data.x, data->mouse.wheel_data.y);
                 #elif IS_ENABLED(CONFIG_ZMK_HID_IO_JOYSTICK)
                 // no joystick scroll implemented
                 #endif
             #else
             LOG_DBG("else: %d", data->mouse.wheel_data.y);
-                if(data->mouse.wheel_data.y > 20)
+                if(abs(data->mouse.wheel_data.y) > 10)
                 {
                     zmk_hid_mouse_scroll_set(0, data->mouse.wheel_data.y > 0 ? 1 : -1);
                     data->mouse.wheel_data.y = 0;
