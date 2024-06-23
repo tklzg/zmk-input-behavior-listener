@@ -320,7 +320,7 @@ static void input_behavior_handler(const struct input_behavior_listener_config *
             LOG_DBG("input_behavior_handler: %d", data->mouse.wheel_data.y);
                 if(data->mouse.wheel_data.y > 20)
                 {
-                    zmk_hid_mouse_scroll_set(0, data->mouse.wheel_data.y);
+                    zmk_hid_mouse_scroll_set(0, data->mouse.wheel_data.y > 0 ? 1 : -1);
                     data->mouse.wheel_data.y = 0;
                 }
             #endif
