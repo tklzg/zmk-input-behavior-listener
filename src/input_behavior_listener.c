@@ -328,7 +328,12 @@ static void input_behavior_handler(const struct input_behavior_listener_config *
                 #endif
             #else
             LOG_DBG("else: %d %d", data->mouse.wheel_data.y, data->mouse.wheel_data_save.y);
-                if(abs(data->mouse.wheel_data_save.y) > 10)
+                if(abs(data->mouse.wheel_data_save.y) > 20)
+                {
+                    zmk_hid_mouse_scroll_set(0, data->mouse.wheel_data_save.y > 0 ? 2 : -2);
+                    data->mouse.wheel_data_save.y = 0;
+                }
+                else if(abs(data->mouse.wheel_data_save.y) > 10)
                 {
                     zmk_hid_mouse_scroll_set(0, data->mouse.wheel_data_save.y > 0 ? 1 : -1);
                     data->mouse.wheel_data_save.y = 0;
